@@ -1,0 +1,898 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Postgres</title>
+
+		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/league.css">
+
+		<!-- Theme used for syntax highlighting of code -->
+		<link rel="stylesheet" href="lib/css/monokai.css">
+
+		<!-- Printing and PDF exports -->
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+
+		<style>
+			.cols {
+				display: grid;
+				grid-gap: 10px;
+			}
+
+			.cols-50-50 {
+				grid-template-columns: 1fr 1fr;
+			}
+
+			.cols-63-37 {
+				grid-template-columns: 63fr 37fr;
+			}
+
+			.cols-80-20 {
+				grid-template-columns: 80fr 20fr;
+			}
+
+			.center {
+				text-align: center;
+			}
+
+			.reveal h1, .reveal h2, .reveal h3, .reveal h4 {
+				text-transform: none;
+				/* font-family: Georgia, 'Times New Roman', Times, serif; */
+				font-family: 'Open Sans', sans-serif;
+				text-shadow: none;
+			}
+
+			.reveal section img {
+				border: 0;
+				margin: 0;
+				box-shadow: none;
+				background: transparent;
+			}
+
+			.crossout {
+				text-decoration: line-through red;
+			}
+
+			.inblock {
+				display: inline-block;
+			}
+
+			.italic {
+				font-style: italic;
+			}
+
+			.x40 {
+				width: 40px;
+				height: 40px;
+			}
+
+			.x48 {
+				width: 48px;
+				height: 48px;
+			}
+
+			.x64 {
+				width: 64px;
+				height: 64px;
+			}
+
+			.x96 {
+				width: 96px;
+				height: 96px;
+			}
+
+			.x128 {
+				width: 128px;
+				height: 128px;
+			}
+
+			.reveal .mt-3 {
+				margin-top: 2rem;
+			}
+
+			.reveal .mt-4 {
+				margin-top: 3rem;
+			}
+
+			.reveal h3 {
+				font-size: 1.35em;
+			}
+
+			.reveal em {
+				font-style: normal;
+				color: #13daec;
+			}
+
+			img.h100 {
+				height: 100px;
+			}
+
+			.sql-out {
+				color: yellow;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+
+				<section>
+					<h3>Postgres</h3>
+
+					<img src="res/images/postgres-logo.svg.png" style="width: 400px;">
+
+					<div>The World's Most Advanced
+						<br>Open Source Relational Database</div>
+				</section>
+
+				<section>
+					<h3>What is Postgres?</h3>
+					<ul>
+						<li>ACID Compliant RDBMS</li>
+						<li>Cross Platform (Linux, Windows, BSD)</li>
+						<li>Free and Open Source</li>
+						<li>Highly Compliant to SQL Standard</li>
+						<li>NoSQL Capabilities</li>
+						<li>OLTP</li>
+						<li>OLAP</li>
+						<li>Extensible</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>A bit about me</h3>
+					<div style="float: left;">
+						<br>
+						<img src="res/images/is-headshot-480x480.jpg" alt="" class="x128">
+						<br>
+						<img src="res/images/tomcat-logo-tm.svg" alt="" class="x128">
+						<br>
+						<img src="res/images/lucee-logo.png" alt="" class="x96">
+					</div>
+					<ul style="font-size: 2rem;">
+						<li>Igal Sapir</li>
+						<li>Software Architect based in Los Angeles</li>
+						<li>20+ years of Data Driven, B2B &amp; B2C applications</li>
+						<li>Used many different DBMSs (SQL Server since 7.0)</li>
+						<li>Open Source Advocate, Committer</li>
+						<li>I help organizations worldwide with</li>
+						<ul>
+							<li>Performance, Scalability, and Security</li>
+							<li>Save $$$ by adopting FOSS and improving efficiency</li>
+							<li>Ad-hoc Development</li>
+							<li>Training</li>
+						</ul>
+					</ul>
+					<div style="margin-top: 3rem; font-size: 1.5rem;">
+						<img src="res/images/linkedin-logo.png" alt="" class="x40" style="vertical-align: sub;">
+						<a href="https://www.linkedin.com/in/igal-sapir/" target="_blank">https://www.linkedin.com/in/igal-sapir/</a>
+					</div>
+				</section>
+
+				<section>
+					<div>What's in a Name? <sup>*</sup></div>
+
+					<h3>PostgreSQL</h3>
+					<div>or</div>
+					<h3>Postgres</h3>
+					<h4>PG</h4>
+
+					<div class="mt-4 italic">not</div>
+					<h4 class="crossout">PostGres</h4>
+					<h4 class="crossout">PostGre</h4>
+					<h4 class="crossout">PostgresSQL</h4>
+
+					<div style="font-size: 1rem;">* One of the very few things of which the community can not reach an agreement</div>
+				</section>
+
+				<section>
+					<h3>Why Open Source?</h3>
+					<ul style="font-size: 2.25rem;">
+						<li>The source code is the single source of truth!</li>
+						<li>Anyone can read the code</li>
+						<ul>
+							<li>Ironically, makes it more secured</li>
+						</ul>
+						<li>Anyone can fix bugs</li>
+						<li>Anyone can add features</li>
+						<ul>
+							<li>Possibly as an extension</li>
+						</ul>
+						<li>Better professional service!</li>
+						<ul>
+							<li>There is competition</li>
+							<li>Sponsorship of product development</li>
+						</ul>
+						<li>Developers are loyal to the product</li>
+						<ul>
+							<li>Not the company</li>
+						</ul>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Are Open Source DBMSs Ready?</h3>
+					<div class="fragment">
+					<q style="font-size: 2rem;">Open source database management systems are gaining in scalability, stability, maturity and adoption by
+						third-party software vendors increasing the potential use in production environments.</q>
+						<div style="font-size: 1.25rem; text-align: right;">Gartner, January 2008 <sub>(ID G00154215)</sub></div>
+					</div>
+					<div class="fragment mt-4">
+						<q style="font-size: 2rem;"><em>Open-source relational DBMSs</em> have matured significantly and <em>can be used
+								to replace commercial RDBMSs at
+								a considerable TCO saving</em>. Information leaders, DBAs and application development management can now
+							consider
+							them as a standard choice for deploying applications.</q>
+						<div style="font-size: 1.25rem; text-align: right;">Gartner, April 2015 <sub>(ID G00273643)</sub></div>
+					</div>
+				</section>
+
+				<section>
+					<h3>Commercial vs. Open Source DBMSs</h3>
+					<br>
+					<img src="res/images/db-engines-popularity-trend-commercial-vs-opensource.png" alt="">
+				</section>
+
+				<section>
+					<h3>Why Postgres?</h3>
+					<ul>
+						<li>Reliable</li>
+						<li>Scalable</li>
+						<li>Performant</li>
+						<li>Mature</li>
+						<li>Well documented</li>
+						<li>Free community support</li>
+						<li>Professional support from many different vendors</li>
+						<li>Not governed by any single organization</li>
+						<li>Specialized Data and Index Types</li>
+						<li>Popular (and Trendy!)</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Trending RDBMS</h3>
+					<br>
+					<img src="res/images/db-engine-of-relational-dbms-201906.png" alt="">
+				</section>
+
+				<section>
+					<h3>Wide Adoption, Trending</h3>
+					<div style="font-size: 2rem;">StackOverflow.com surveys of ~100,000 developers show that <em>Postgres</em> has
+						become more popular than <em>Microsoft SQL Server</em></div>
+					<br>
+					<img src="res/images/so-dev-survey-databases-used-2018-2019.png" alt="">
+				</section>
+
+				<section>
+					<h3>Loved and Wanted</h3>
+					<div style="font-size: 2rem;">Postgres is the most <em>Loved</em> and most <em>Wanted</em> RDBMS</div>
+					<br>
+					<div class="cols cols-50-50">
+						<img src="res/images/so-dev-survey-most-loved-db-2019.png" alt="">
+						<img src="res/images/so-dev-survey-most-wanted-db-2019.png" alt="">
+					</div>
+					<div style="margin-top: 1rem; font-size: 0.875rem;">According to the 2019 StackOverflow Developer Survey</div>
+				</section>
+
+				<section>
+					<h3>Does it scale?</h3>
+					<br>
+					<div class="cols cols-50-50 mt-4">
+						<img src="res/images/chris-travers.png" alt="Chris Travers">
+						<div>
+							<q>At Adjust GmbH we have <br>5 &ndash; 10 Petabytes of data in Postgres</q>
+							<div class="mt-3" style="font-size: 1.25rem; text-align: right;">- Chris Travers, adjust.com, June 2019</div>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h3>Who uses Postgres?</h3>
+					<div style="font-size: 2rem;">We only know about the ones who publicize it</div>
+					<img src="res/images/guardian-hello-postgres.png" alt="" class="mt-3">
+				</section>
+
+				<section>
+					<h3>Who uses Postgres?</h3>
+					<div style="font-size: 2rem;">And the ones featured in case studies</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-mastercard.jpg" alt="MasterCard" class="h100">
+						<br>MasterCard
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-clear-capital.png" alt="Clear Capital" class="h100">
+						<br>Clear Capital
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-att.jpg" alt="AT&T" class="h100">
+						<br>AT&T
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-hp.jpg" alt="HP" class="h100">
+						<br>HP
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-sony.jpg" alt="Sony" class="h100">
+						<br>Sony
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-skype.jpg" alt="Skype" class="h100">
+						<br>Skype
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-usarmy.svg.png" alt="US Army" class="h100">
+						<br>US Army
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-us-air-force.svg" alt="US Air Force" class="h100">
+						<br>US Air Force
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-vonage.png" alt="Vonage" class="h100">
+						<br>Vonage
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-gap.png" alt="GAP" class="h100">
+						<br>GAP
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-bmw.png" alt="BMW" class="h100">
+						<br>BMW
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-un.jpg" alt="UN" class="h100">
+						<br>UN
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-bloomberg.jpg" alt="Bloomberg" class="h100">
+						<br>Bloomberg
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-nokia.png" alt="Nokia" class="h100">
+						<br>Nokia
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-goldman.svg.png" alt="Goldman Sachs" class="h100">
+						<br>Goldman Sachs
+					</div>
+					<div style="float: left; margin: 0.25rem; font-size: 1rem;">
+						<img src="res/images/logo-instagram.svg.png" alt="Instagram" class="h100">
+						<br>Instagram
+					</div>
+
+					<br style="clear: left;">
+
+					<div class="mt-3" style="font-size: 0.875rem; text-align: left;">
+						Sources:
+						<br><a href="https://en.wikipedia.org/wiki/PostgreSQL#Notable_users">https://en.wikipedia.org/wiki/PostgreSQL#Notable_users</a>
+						<br><a href="https://www.enterprisedb.com/resources/case-studies">https://www.enterprisedb.com/resources/case-studies</a>
+						<br><a href="https://www.cybertec-postgresql.com/en/postgresql-overview/solutions-who-uses-postgresql/">https://www.cybertec-postgresql.com/en/postgresql-overview/solutions-who-uses-postgresql/</a>
+					</div>
+				</section>
+
+				<section>
+					<h3>A little bit of History</h3>
+					<div class="cols cols-80-20">
+						<ul style="font-size: 1.75rem;">
+							<li>Stemmed from the Ingres project</li>
+							<ul>
+								<li>RDBMSs project; UC Berkeley early 1970s</li>
+								<li>Also spawned Sybase and... Microsoft SQL Server</li>
+							</ul>
+							<li><em>Post</em>-In<em>gres</em> project c. 1985</li>
+							<ul>
+								<li>POSTQUEL Query Language</li>
+							</ul>
+							<li>Released as Postgres95 in 1995</li>
+							<ul>
+								<li>Berkeley grad students Andrew Yu and Jolly Chen</li>
+								<li>POSTQUEL replaced with a SQL parser</li>
+								<li>Liberal license attracted more developers</li>
+							</ul>
+							<li>Renamed to PostgreSQL in 1996 <sub>(Or was it?)</sub></li>
+							<li>Nowadays hundreds of contributors from around the world</li>
+							<ul>
+								<li>Notable committers like Tom Lane and Bruce Momjian</li>
+							</ul>
+						</ul>
+						<div style="margin-top: -60px;">
+							<div style="margin-top: 0.5rem;">
+								<img src="res/images/440px-Michael_Stonebraker_P1120062.jpg" alt="Michael Stonebraker">
+								<div style="font-size: 1rem; margin-top: -0.75rem;">Michael Stonebraker</div>
+							</div>
+							<div style="margin-top: 0.5rem;">
+								<img src="res/images/tom-lane-rejected-my-patch.jpg" alt="Tom Lane rejected my patch and all I got is this stupid T-shirt">
+								<div style="font-size: 1rem; margin-top: -0.75rem;">Tom Lane</div>
+							</div>
+							<div style="margin-top: 0.5rem;">
+								<img src="res/images/momjian.jpg" alt="Bruce Momjian">
+								<div style="font-size: 1rem; margin-top: -0.75rem;">Bruce Momjian</div>
+							</div>
+						</div>
+					</div>
+				</section>
+
+				<section>
+					<h3>Release Cycle</h3>
+					<ul style="font-size: 2.25rem;">
+						<li>Once a Year for a Major Version
+							<ul>
+								<li>Lots of new features!</li>
+								<li>At least 5 years support</li>
+								<li>Data files are not backward compatible</li>
+								<li>Two parts major versions until 9.6, e.g. 9.4, 9.5, 9.6</li>
+								<li>Single part version numbering since 10, e.g. 10, 11, 12</li>
+							</ul>
+						</li>
+						<li>Usually a few Minor Updates throughout the year
+							<ul>
+								<li>No new features</li>
+								<li>Bug fixes</li>
+								<li>Security patches <sub>(rare)</sub></li>
+								<li>Data files are backward compatible
+									<sub>(rare exceptions)</sub>
+								</li>
+							</ul>
+						</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Top Features Overview</h3>
+					<ul>
+						<li>MVCC with different isolation levels</li>
+						<li>Replication and HA solutions</li>
+						<li>Forks and ad-hoc products</li>
+						<ul>
+							<li>TimeScale DB <sub>(time series data)</sub></li>
+							<li>GreenPlum DB <sub>(big data analytics and BI)</sub></li>
+							<li>PostGIS <sub>(spatial data for Geographic Information Systems)</sub></li>
+							<li>Citus <sub>(added sharding and replication features)</sub></li>
+							<li>ToroDB <sub>(NoSQL features and MongoDB integration)</sub></li>
+						</ul>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Notable Operators</h3>
+					<ul>
+						<li><code><em>$$</em></code> - Dollar Quoting</li>
+						<ul>
+							<li style="font-size: 1.5rem;">
+								<code>select <em>$$</em> <em style="color: #99cc99;">This string can have "quotes" and apostrophe's and will only terminate when another set of two dollar signs are encountered</em> <em>$$</em> as input;</code>
+							</li>
+						</ul>
+						<li class="mt-3"><code><em>||</em></code> - String concatenation</li>
+						<ul>
+							<li style="font-size: 1.5rem;">
+								<code>select 'Hello' <em>||</em> ' ' <em>||</em> 'SQL Saturday';</code>
+							</li>
+						</ul>
+						<li class="mt-3"><code><em>::</em></code> - Cast</li>
+						<ul>
+							<li style="font-size: 1.5rem;">
+								<code>select current_timestamp<em>::</em>text;</code>
+							</li>
+						</ul>
+						<li class="mt-3"><code><em>~</em></code> - REGEX pattern match</li>
+						<ul>
+							<li style="font-size: 1.5rem;">
+								<code>select 'String with 3 digit number 891 in it' <em>~</em> '\D\d{3}\D';</code>
+							</li>
+						</ul>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Data Types</h3>
+					<div>
+					<ul style="width: 80%;">
+						<li>Numeric</li>
+						<ul>
+							<li>smallint, int, bigint</li>
+							<li>decimal, <em>numeric</em>, real, double precision</li>
+							<li>money</li>
+							<li>smallserial, serial, bigserial</li>
+						</ul>
+					</ul>
+					</div>
+					<div>
+					<ul style="width: 80%;">
+						<li>Character</li>
+						<ul>
+							<li>varchar</li>
+							<li>char</li>
+							<li><em>text</em></li>
+						</ul>
+					</ul>
+					</div>
+				</section>
+
+				<section>
+					<h3>Data Types</h3>
+					<div>
+						<ul style="width: 80%;">
+							<li>Binary</li>
+							<ul>
+								<li>bytea</li>
+							</ul>
+						</ul>
+					</div>
+					<div>
+						<ul style="width: 80%;">
+							<li>Date/Time</li>
+							<div class="cols cols-50-50">
+								<ul>
+									<li>timestamp</li>
+									<li><em>timestamptz</em></li>
+									<li>date</li>
+									<li>time</li>
+									<li><em>interval</em></li>
+								</ul>
+								<div>
+									<img src="res/images/sql-interval.png" alt="" style="max-height: initial;">
+								</div>
+							</div>
+						</ul>
+					</div>
+				</section>
+
+				<section>
+					<h3>Data Types</h3>
+					<div>
+						<ul style="width: 80%;">
+							<li>Boolean</li>
+							<ul>
+								<li style="font-size: 1.75rem;">true | false</li>
+							</ul>
+						</ul>
+						<ul style="width: 80%;">
+							<li>Enum</li>
+							<ul>
+								<li style="font-size: 1.75rem;">create type rating as enum ('hate', 'dislike', 'meh', 'like', 'love');</li>
+								<li style="font-size: 1.75rem;">provides type safety, CaSe sensitive</li>
+								<li style="font-size: 1.75rem;">maintains order for sort and comparisons, e.g. rating > 'meh'</li>
+							</ul>
+						</ul>
+						<ul style="width: 80%;">
+							<li>Geometric</li>
+							<ul>
+								<li style="font-size: 1.75rem;">point, line, box, path, polygon, circle</li>
+							</ul>
+						</ul>
+						<ul style="width: 80%;">
+							<li>Network Address</li>
+							<ul>
+								<li style="font-size: 1.75rem;">cidr, inet, macaddr</li>
+							</ul>
+						</ul>
+						<ul style="width: 80%;">
+							<li>Bit String</li>
+							<ul>
+								<li style="font-size: 1.75rem;">bit, bit varying</li>
+							</ul>
+						</ul>
+					</div>
+				</section>
+
+				<section>
+					<h3>Data Types</h3>
+					<div>
+						<ul>
+							<li>Full Text Search</li>
+							<ul>
+								<li>tsvector</li>
+								<div style="font-size: 1.35rem;">
+									<code>select to_tsvector('The quick brown fox jumps over the lazy dog');</code>
+									<br>
+									<code class="sql-out">&gt; 'brown':3 'dog':9 'fox':4 'jump':5 'lazi':8 'quick':2</code>
+								</div>
+								<li>tsquery</li>
+								<div style="font-size: 1.35rem;">
+									<code>select to_tsquery('Foxes & Jumped');</code>
+									<br>
+									<code class="sql-out">&gt; 'fox' & 'jump'</code>
+								</div>
+								<li>Use the @@ operator</li>
+								<div style="font-size: 1.35rem;">
+									<code>select to_tsvector('The quick brown fox jumps over the lazy dog')
+										&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;@@ to_tsquery('Foxes & Jumped')</code>
+									<br>
+									<code class="sql-out">&gt; true</code>
+								</div>
+							</ul>
+						</ul>
+					</div>
+				</section>
+
+				<section>
+					<h3>Data Types</h3>
+					<div class="cols cols-63-37">
+						<ul>
+							<li>UUID</li>
+							<li>XML</li>
+							<li>JSON</li>
+							<ul style="font-size: 1.75rem;">
+								<li>Stored as original input text</li>
+								<li>Ordered maintained</li>
+								<li>Duplicate keys kept</li>
+							</ul>
+							<li>JSONB</li>
+							<ul style="font-size: 1.75rem;">
+								<li>Parsed and stored as binary</li>
+								<li>Order is lost</li>
+								<li>Duplicate keys removed</li>
+								<li>Provides <em>NoSQL</em> capabilities</li>
+								<li>Indexable! 
+								</li>
+							</ul>
+						</ul>
+						<div>
+							<img src="res/images/json-example.png" alt="" style="margin-top: 30rem; max-width: 100%;">
+						</div>
+					</div>
+					<div style="text-align: left; font-size: 1.35rem;">
+						e.g. 
+						<br><code>select * from some_tbl where some_jsonb_col-&gt;user-&gt;&gt;last_name = 'Sapir';</code>
+					</div>
+				</section>
+
+				<section>
+					<h3>Data Types</h3>
+					<div>
+						<ul>
+							<li>Array</li>
+							<ul>
+								<li>Keep a searchable list of elements, e.g. Tags</li>
+								<li>Can be multi-dimensional, e.g. grid, cube, etc</li>
+							</ul>
+							<li>Range</li>
+							<ul>
+								<li>Numeric</li>
+								<li>Timestamp</li>
+								<li>Date</li>
+							</ul>
+						</ul>
+					</div>
+				</section>
+
+				<section>
+					<h3>Index Types</h3>
+					<ul>
+						<li>B-Tree</li>
+						<ul style="font-size: 1.75rem;">
+							<li>Great for unique values or &lt; and &gt;</li>
+						</ul>
+						<li>Hash</li>
+						<ul style="font-size: 1.75rem;">
+							<li>Useful for exact matches</li>
+						</ul>
+						<li>BRIN - Block Range Index</li>
+						<ul style="font-size: 1.75rem;">
+							<li>Useful in huge tables</li>
+						</ul>
+						<li>GIN -Generalized Inverted Index</li>
+						<ul style="font-size: 1.75rem;">
+							<li>Great for many duplicate keys, e.g. Full Text</li>
+						</ul>
+						<li>GiST - Generalized Search Tree</li>
+						<ul style="font-size: 1.75rem;">
+							<li>Great for geographical and range types</li>
+						</ul>
+						<li>SP-GiST - Space Partitioned GiST</li>
+						<ul style="font-size: 1.75rem;">
+							<li>Great for many duplicate prefixes</li>
+						</ul>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Indexing Strategies</h3>
+					<ul>
+						<li>Use the right tool for the job</li>
+						<div style="font-size: 1.5rem;">
+							<code>create index ix_name on some_table <em>using</em> gin(some_column);</code>
+						</div>
+						<li>The <em>WHERE</em> clause must match the indexes</li>
+						<li>Expression indexing</li>
+						<div style="font-size: 1.75rem;">
+							<code>create index ix_email on users(<em>lower(email</em>));</code>
+							<br>
+							...
+							<br>
+							<code>select * from users where <em>lower(email)</em> = 'user@domain.org';</code>
+						</div>
+						<li>Partial indexing</li>
+						<div style="font-size: 1.75rem;">
+							<code>create index ix_invoice_id on invoices(id)
+							<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<em>where is_open = true</em>;</code>
+							<br>
+							...
+							<br>
+							<code>select * from invoices where <em>is_open = true</em> and ...;</code>
+						</div>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Extensions</h3>
+					<ul>
+						<li>Foreign Data Wrappers</li>
+						<ul>
+							<li>connect to other data sources, e.g. SQL Server</li>
+						</ul>
+						<li>pl/V8 JavaScript engine</li>
+						<li>pg_trgm (fuzzy searching)</li>
+						<li>pg_cron (scheduling)</li>
+						<li>tablefunc (pivot tables with crosstab)</li>
+						<li>many more on PGXN<sup>*</sup></li>
+					</ul>
+
+					<div class="mt-4" style="font-size: 1.5rem;">* <a href="https://pgxn.org/">https://pgxn.org/</a></div>
+				</section>
+
+				<section>
+					<h3>Procedural Languages</h3>
+					<div style="font-size: 1.75rem;">
+						Write your UDFs and Procs in the language you or your team knows best:
+					</div>
+					<ul class="mt-4" style="font-size: 1.75rem;">
+						<li>Built in languages</li>
+						<ul>
+							<li><em>pl/pgSQL</em></li>
+							<li>pl/Tcl</li>
+							<li>pl/Perl</li>
+							<li>pl/Python</li>
+						</ul>
+						<li>Available as Extensiosn</li>
+						<ul>
+							<li><em>pl/V8</em></li>
+							<li>pl/Java</li>
+							<li><em>pl/R</em></li>
+							<li>pl/PHP</li>
+							<li>pl/Ruby</li>
+							<li>pl/sh</li>
+						</ul>
+					</ul>
+				</section>
+
+				<section>
+					<h3>"Standard" Features</h3>
+					<ul style="width: 80%;">
+						<div class="fragment">
+							<li>Schemas</li>
+						</div>
+						<div class="fragment">
+							<li>Tables</li>
+							<ul style="font-size: 1.75rem;">
+								<li>Also Partitioned Tables</li>
+							</ul>
+						</div>
+						<div class="fragment">
+							<li>Views</li>
+							<ul style="font-size: 1.75rem;">
+								<li>Also Materialized Views</li>
+							</ul>
+						</div>
+						<div class="fragment">
+							<li>Functions</li>
+							<ul style="font-size: 1.75rem;">
+								<li>string_agg()</li>
+								<li>generate_series()</li>
+								<li>lots of great built in functions</li>
+							</ul>
+						</div>
+						<div class="fragment">
+							<li>Stored Procedures</li>
+						</div>
+						<div class="fragment">
+							<li>Triggers</li>
+						</div>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Notable Differences from SQL Server</h3>
+					<ul>
+						<li class="mt-3">Identifiers are collapsed to lowercase</li>
+						<ul style="font-size: 1.75rem;">
+							<li>You can use quotes to maintain case - Don't!</li>
+							<li>Use snake_case instead of hungarianNotation or PascalNotation</li>
+						</ul>
+						<li class="mt-3">Character types are CaSe sensitive</li>
+						<ul style="font-size: 1.75rem;">
+							<li>Use function expression e.g. lower() or the citext extension</li>
+						</ul>
+						<li class="mt-3">String concatenation operator is <em>||</em> and not <em>+</em></li>
+						<li class="mt-3">Data Types</li>
+					</ul>
+				</section>
+
+				<section>
+					<h3>Migration Considerations</h3>
+					<ul>
+						<li>Downtime allowed?</li>
+						<ul>
+							<li>Minimize it by preparing everything in advance</li>
+						</ul>
+						<li>Downtime not allowed?</li>
+						<ul>
+							<li>Do initial migration</li>
+							<li>Write to both databases until migration completes</li>
+						</ul>
+						<li>Use TDD</li>
+						<ul>
+							<li>Write test suite</li>
+							<li>Test queries, functions, etc.</li>
+						</ul>
+					</ul>
+				</section>
+
+				<section>
+					<h3>The Migrate2Postgres Tool</h3>
+					<div class="cols cols-50-50">
+						<ul style="font-size: 1.875rem;">
+							<li>Open Source tool I wrote</li>
+							<li>Cross platform - written in Java</li>
+							<li>Easy to use JSON config file</li>
+							<li>Will generate DDL</li>
+							<li>Will copy the data</li>
+							<li>You will still have to</li>
+							<ul>
+								<li>Create indexes, functions, triggers, views, etc.</li>
+							</ul>
+							<li>More features might be added</li>
+						</ul>
+						<img src="res/images/sql-type-mapping.png" class="mt-4">
+					</div>
+					<div class="mt-4" style="font-size: 1rem;">
+						<a href="https://github.com/isapir/Migrate2Postgres">https://github.com/isapir/Migrate2Postgres</a>
+					</div>
+				</section>
+
+				<section>
+					<h1>Demo Time!</h1>
+				</section>
+	
+				<section>
+					<h1>Questions?</h1>
+
+					<h3>Please connect</h3>
+					<div style="margin-top: 3rem; font-size: 2rem;">
+						<img src="res/images/linkedin-logo.png" alt="" class="x40" style="vertical-align: sub;">
+						<a href="https://www.linkedin.com/in/igal-sapir/" target="_blank">https://www.linkedin.com/in/igal-sapir/</a>
+					</div>
+				</section>
+			</div>
+		</div>
+
+		<script src="js/reveal.js"></script>
+
+		<script>
+			// More info about config & dependencies:
+			// - https://github.com/hakimel/reveal.js#configuration
+			// - https://github.com/hakimel/reveal.js#dependencies
+			Reveal.initialize({
+				dependencies: [
+					{ src: 'plugin/markdown/marked.js' },
+					{ src: 'plugin/markdown/markdown.js' },
+					{ src: 'plugin/notes/notes.js', async: true },
+					{ src: 'plugin/highlight/highlight.js', async: true }
+				]
+				,hash   : true
+				,center : false
+				,slideNumber : "c/t"
+				,zoomKey: "ctrl"
+			});
+		</script>
+	</body>
+</html>
